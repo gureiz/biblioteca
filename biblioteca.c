@@ -181,12 +181,16 @@ void menuPrincipal(int isAdmin) {
                 listarLivros();
                 break;
             case 3:
+                emprestarLivro(idUsuario);
                 break;
             case 4:
+                reemprestarLivro(idUsuario);
                 break;
             case 5:
+                doarLivro();
                 break;
             case 6:
+                listarEmprestimos(idUsuario);
                 break;
             case 7:
                 printf("\nSaindo do menu principal...\n");
@@ -308,4 +312,43 @@ void reemprestarLivro(int idUsuario) {
     }
     printf("Empréstimo não encontrado.\n");
     fclose(file);
+}
+
+//função que permite que o usuário adicione um livro no acervo
+void doarLivro() {
+    cadastrarLivro(); //é possível utilizar a lógica de uma função já existente
+    printf("\nLivro doado com sucesso! Obrigado pela sua contribuição.\n");
+}
+
+//função que exibe os empréstimos do usuário
+void listarEmprestimos(int idUsuario) {
+    FILE *fileEmprestimos = fopen("emprestimos.dat", "rb");
+    FILE *fileLivros = fopen("livros.dat", "rb");
+    if (fileEmprestimos == NULL || fileLivros == NULL) {
+        perror("ERRO");
+        if (fileEmprestimos) fclose(fileEmprestimos);
+        if (fileLivros) fclose(fileLivros);
+        return;
+    }
+    Emprestimo emprestimo;
+    Livro livro;
+    printf("\nLivros Emprestados:\n");
+    printf("\n-------------------\n");
+    while (fread(&emprestimo, sizeof(Emprestimo), 1, fileEmprestimos) == 1) {
+        if (emprestimo.idUsuario == idUsuario) { 
+            rewind(fileLivros);
+            while (fread(&livro, sizeof(Livro), 1, fileLivros) == 1) {
+                if (livro.id == emprestimo.idLivro) {
+                    struct tm *dataDevolucao = localtime(&emprestimo.dataDevolucao);
+                    printf("Título: %s\nAutor: %s\nAno de Publicação: %d\nData de Devolução: %02d/%02d/%04d\n",
+                           livro.titulo, livro.autor, livro.ano,
+                           dataDevolucao->tm_mday, dataDevolucao->tm_mon + 1, dataDevolucao->tm_year + 1900);
+                    printf("--------------------------\n");
+                    break;
+                }
+            }
+        }
+    }
+    fclose(fileEmprestimos);
+    fclose(fileLivros);
 }

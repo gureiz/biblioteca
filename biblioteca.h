@@ -47,3 +47,5 @@ void listarLivros();
 int verificarLivroDisponivel(int idLivro);
 void emprestarLivro(int idUsuario);
 void reemprestarLivro(int idUsuario);
+void doarLivro();
+void listarEmprestimos(int idUsuario);
