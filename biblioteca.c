@@ -46,3 +46,38 @@ int gerarIdLivro() {
     }
     return id; 
 }
+
+//função para cadatrar novos usuários
+void cadastrarUsuario() {
+    FILE *file = fopen("usuarios.txt", "a");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    Usuario usuario;
+    usuario.id = gerarIdUsuario();
+    printf("\nDigite o Nome do Usuário: ");
+    scanf(" %[^\n]", usuario.nome);
+    printf("Digite o Email do Usuário: ");
+    scanf(" %[^\n]", usuario.email);
+    printf("Digite a Senha: ");
+    scanf(" %[^\n]", usuario.senha);
+    Usuario temp;
+    FILE *fileTemp = fopen("usuarios.txt", "r");
+    int existe = 0;
+    while (fscanf(fileTemp, "%d %49s %49s %19s", &temp.id, temp.nome, temp.email, temp.senha) == 4) {
+        if (strcmp(temp.email, usuario.email) == 0) {
+            existe = 1;
+            break;
+        }
+    }
+    fclose(fileTemp);
+    if (existe) {
+        printf("\nEsse e-mail já está cadastrado.\n");
+    } else {
+        fprintf(file, "%d %s %s %s\n", usuario.id, usuario.nome, usuario.email, usuario.senha);
+        printf("\nUsuário cadastrado com sucesso!\n");
+    }
+
+    fclose(file);
+}
