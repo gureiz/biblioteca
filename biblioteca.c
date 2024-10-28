@@ -113,3 +113,40 @@ int realizarLogin(int *isAdmin) {
     fclose(file);
     return 0;
 }
+
+//mostra o menu de cadastro e login
+void menuLogin() {
+    int opcao;
+    do {
+        printf("\n========================\n");
+        printf("       BIBLIOTECA  ");
+        printf("\n========================\n");
+        printf("1. Cadastrar\n");
+        printf("2. Login\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarUsuario();
+                break;
+            case 2: {
+                int isAdmin = 0;
+                if (realizarLogin(&isAdmin)) {
+                    printf("\nLogin bem-sucedido!\n");
+                    menuPrincipal(isAdmin);
+                } else {
+                    printf("\nFalha no login!\n");
+                }
+                break;
+            }
+            case 3:
+                printf("\nSaindo...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 3);
+}

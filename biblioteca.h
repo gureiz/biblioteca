@@ -20,3 +20,9 @@ int gerarIdUsuario();
 int gerarIdLivro();
 void cadastrarUsuario();
 int realizarLogin(int *isAdmin);
+void menuLogin();
+int main() {
+    criarArquivos();  //cria os arquivos automaticamente
+    menuLogin();
+    return 0;
+}
