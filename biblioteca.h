@@ -19,3 +19,4 @@ void criarArquivos();
 int gerarIdUsuario();
 int gerarIdLivro();
 void cadastrarUsuario();
+int realizarLogin(int *isAdmin);

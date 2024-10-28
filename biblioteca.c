@@ -12,6 +12,7 @@ void criarArquivos() {
     file = fopen("emprestimos.dat", "ab");
     if (file) fclose(file);
 }
+
 //cria um id uníco para um usuário
 int gerarIdUsuario() {
     FILE *file = fopen("id_usuario.txt", "r+");
@@ -29,6 +30,7 @@ int gerarIdUsuario() {
     }
     return id; 
 }
+
 //cria um id único para um livro
 int gerarIdLivro() {
     FILE *file = fopen("id_livro.txt", "r+");
@@ -80,4 +82,34 @@ void cadastrarUsuario() {
     }
 
     fclose(file);
+}
+
+//função para o login do usuário
+int realizarLogin(int *isAdmin) {
+    FILE *file = fopen("usuarios.txt", "r");
+    if (file == NULL) {
+        perror("ERRO");
+        return 0;
+    }
+    char email[50], senha[20];
+    printf("\nE-mail: ");
+    scanf(" %[^\n]", email);
+    printf("Senha: ");
+    scanf(" %[^\n]", senha);
+    if (strcmp(email, "adm@adm.com") == 0 && strcmp(senha, "adm") == 0) {
+        *isAdmin = 1;
+        fclose(file);
+        return 1;
+    }
+    Usuario usuario;
+    while (fscanf(file, "%d %49s %49s %19s", &usuario.id, usuario.nome, usuario.email, usuario.senha) == 4) {
+        if (strcmp(usuario.email, email) == 0 && strcmp(usuario.senha, senha) == 0) {
+            *isAdmin = 0;
+            fclose(file);
+            return 1;
+        }
+    }
+
+    fclose(file);
+    return 0;
 }
