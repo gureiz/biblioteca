@@ -174,6 +174,8 @@ void menuPrincipal(int isAdmin) {
 
         switch (opcao) {
             case 1:
+                if (isAdmin) cadastrarLivro();
+                else printf("Acesso negado. Opção exclusiva para o administrador.\n");
                 break;
             case 2:
                 break;
@@ -193,4 +195,24 @@ void menuPrincipal(int isAdmin) {
                 break;
         }
     } while (opcao != 7);
+}
+
+//função de cadastrar livro, disponível apenas para o administrador
+void cadastrarLivro() {
+    FILE *file = fopen("livros.dat", "ab");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    Livro livro;
+    livro.id = gerarIdLivro();  
+    printf("\nTítulo: ");
+    scanf(" %[^\n]", livro.titulo);
+    printf("Autor: ");
+    scanf(" %[^\n]", livro.autor);
+    printf("Ano de Publicação: ");
+    scanf("%d", &livro.ano);
+    fwrite(&livro, sizeof(Livro), 1, file);
+    fclose(file);
+    printf("\nLivro cadastrado com sucesso!\n");
 }
