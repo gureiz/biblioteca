@@ -234,3 +234,21 @@ void listarLivros() {
     }
     fclose(file);
 }
+
+//verificar a disponibilidade do livro para realizar o empréstiimo
+int verificarLivroDisponivel(int idLivro) {
+    FILE *fileEmprestimos = fopen("emprestimos.dat", "rb");
+    if (fileEmprestimos == NULL) {
+        perror("ERRO");
+        return 1; 
+    }
+    Emprestimo emprestimo;
+    while (fread(&emprestimo, sizeof(Emprestimo), 1, fileEmprestimos) == 1) {
+        if (emprestimo.idLivro == idLivro && time(NULL) < emprestimo.dataDevolucao) {
+            fclose(fileEmprestimos);
+            return 0; 
+        }
+    }
+    fclose(fileEmprestimos);
+    return 1; 
+}

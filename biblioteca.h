@@ -22,6 +22,13 @@ typedef struct {
     char senha[20];
 } Usuario;
 
+//armazenar informações de um empréstimo
+typedef struct {
+    int idUsuario;
+    int idLivro;
+    time_t dataEmprestimo;
+    time_t dataDevolucao;
+} Emprestimo;
 
 void criarArquivos();
 int gerarIdUsuario();
@@ -37,3 +44,4 @@ int main() {
 void menuPrincipal(int isAdmin);
 void cadastrarLivro();
 void listarLivros();
+int verificarLivroDisponivel(int idLivro);
