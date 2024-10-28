@@ -36,3 +36,4 @@ int main() {
 }
 void menuPrincipal(int isAdmin);
 void cadastrarLivro();
+void listarLivros();

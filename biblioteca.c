@@ -178,6 +178,7 @@ void menuPrincipal(int isAdmin) {
                 else printf("Acesso negado. Opção exclusiva para o administrador.\n");
                 break;
             case 2:
+                listarLivros();
                 break;
             case 3:
                 break;
@@ -215,4 +216,21 @@ void cadastrarLivro() {
     fwrite(&livro, sizeof(Livro), 1, file);
     fclose(file);
     printf("\nLivro cadastrado com sucesso!\n");
+}
+
+//função para mostrar o acervo
+void listarLivros() {
+    FILE *file = fopen("livros.dat", "rb");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    Livro livro;
+    printf("\n========================\n");
+    printf("  LISTA DE LIVROS  ");
+    printf("\n========================\n");
+    while (fread(&livro, sizeof(Livro), 1, file) == 1) {
+        printf("ID: %d | Título: %s | Autor: %s | Ano: %d\n", livro.id, livro.titulo, livro.autor, livro.ano);
+    }
+    fclose(file);
 }
