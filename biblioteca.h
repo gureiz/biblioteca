@@ -45,3 +45,4 @@ void menuPrincipal(int isAdmin);
 void cadastrarLivro();
 void listarLivros();
 int verificarLivroDisponivel(int idLivro);
+void emprestarLivro(int idUsuario);

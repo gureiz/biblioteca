@@ -252,3 +252,35 @@ int verificarLivroDisponivel(int idLivro) {
     fclose(fileEmprestimos);
     return 1; 
 }
+
+//função de empréstimo
+void emprestarLivro(int idUsuario) {
+    FILE *file = fopen("livros.dat", "rb");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    int idLivro;
+    printf("Digite o ID do livro que deseja emprestar: ");
+    scanf("%d", &idLivro);
+    if (!verificarLivroDisponivel(idLivro)) {
+        printf("Livro já emprestado.\n");
+        fclose(file);
+        return;
+    }
+    Emprestimo emprestimo;
+    emprestimo.idUsuario = idUsuario;
+    emprestimo.idLivro = idLivro;
+    emprestimo.dataEmprestimo = time(NULL);
+    emprestimo.dataDevolucao = emprestimo.dataEmprestimo + EMPRESTIMO;
+    FILE *fileEmprestimos = fopen("emprestimos.dat", "ab");
+    if (fileEmprestimos == NULL) {
+        perror("ERRO");
+        fclose(file);
+        return;
+    }
+    fwrite(&emprestimo, sizeof(Emprestimo), 1, fileEmprestimos);
+    fclose(fileEmprestimos);
+    fclose(file);
+    printf("Livro emprestado com sucesso!\n");
+}
