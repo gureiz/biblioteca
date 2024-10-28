@@ -309,3 +309,9 @@ void reemprestarLivro(int idUsuario) {
     printf("Empréstimo não encontrado.\n");
     fclose(file);
 }
+
+//função que permite que o usuário adicione um livro no acervo
+void doarLivro() {
+    cadastrarLivro(); //é possível utilizar a lógica de uma função já existente
+    printf("\nLivro doado com sucesso! Obrigado pela sua contribuição.\n");
+}
