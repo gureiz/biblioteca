@@ -284,3 +284,28 @@ void emprestarLivro(int idUsuario) {
     fclose(file);
     printf("Livro emprestado com sucesso!\n");
 }
+
+//função para "reempréstimo" do livro
+void reemprestarLivro(int idUsuario) {
+    FILE *file = fopen("emprestimos.dat", "rb+");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    int idLivro;
+    printf("Digite o ID do livro que deseja reemprestar: ");
+    scanf("%d", &idLivro);
+    Emprestimo emprestimo;
+    while (fread(&emprestimo, sizeof(Emprestimo), 1, file) == 1) {
+        if (emprestimo.idUsuario == idUsuario && emprestimo.idLivro == idLivro) {
+            emprestimo.dataDevolucao += REEMPRESTIMO;
+            fseek(file, -sizeof(Emprestimo), SEEK_CUR);
+            fwrite(&emprestimo, sizeof(Emprestimo), 1, file);
+            printf("Data atualizado com sucesso! Nova data de devolução: %s\n", ctime(&emprestimo.dataDevolucao));
+            fclose(file);
+            return;
+        }
+    }
+    printf("Empréstimo não encontrado.\n");
+    fclose(file);
+}
