@@ -6,6 +6,14 @@
 #define EMPRESTIMO (14 * 24 * 3600) //constante para o tempo de emprestimo (2 SEMANAS)
 #define REEMPRESTIMO (7 * 24 * 3600) //constante para reemprestimo (1 SEMANA)
 
+//armazenar informações de um livro
+typedef struct {
+    int id;
+    char titulo[50];
+    char autor[50];
+    int ano;
+} Livro;
+
 //armazenar informações de um usuário
 typedef struct {
     int id;
@@ -27,3 +35,4 @@ int main() {
     return 0;
 }
 void menuPrincipal(int isAdmin);
+void cadastrarLivro();
