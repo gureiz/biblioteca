@@ -150,3 +150,47 @@ void menuLogin() {
         }
     } while (opcao != 3);
 }
+
+//mostra o munu principal
+void menuPrincipal(int isAdmin) {
+    int opcao;
+    int idUsuario = isAdmin ? -1 : 1;
+
+    do {
+        printf("\n========================\n");
+        printf("     MENU PRINCIPAL  ");
+        printf("\n========================\n");
+        if (isAdmin) {
+            printf("1. Cadastrar Livro (Administrador)\n");
+        }
+        printf("2. Acervo\n");
+        printf("3. Empréstimo\n");
+        printf("4. Renovar Empréstimo\n");
+        printf("5. Doe um Livro\n");
+        printf("6. Meus Empréstimos\n");
+        printf("7. Voltar\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                printf("\nSaindo do menu principal...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 7);
+}

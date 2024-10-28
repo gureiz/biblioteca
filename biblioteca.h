@@ -26,3 +26,4 @@ int main() {
     menuLogin();
     return 0;
 }
+void menuPrincipal(int isAdmin);
