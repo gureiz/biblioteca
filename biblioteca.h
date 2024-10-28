@@ -6,6 +6,14 @@
 #define EMPRESTIMO (14 * 24 * 3600) //constante para o tempo de emprestimo (2 SEMANAS)
 #define REEMPRESTIMO (7 * 24 * 3600) //constante para reemprestimo (1 SEMANA)
 
+//armazenar informações de um livro
+typedef struct {
+    int id;
+    char titulo[50];
+    char autor[50];
+    int ano;
+} Livro;
+
 //armazenar informações de um usuário
 typedef struct {
     int id;
@@ -14,9 +22,28 @@ typedef struct {
     char senha[20];
 } Usuario;
 
+//armazenar informações de um empréstimo
+typedef struct {
+    int idUsuario;
+    int idLivro;
+    time_t dataEmprestimo;
+    time_t dataDevolucao;
+} Emprestimo;
 
 void criarArquivos();
 int gerarIdUsuario();
 int gerarIdLivro();
 void cadastrarUsuario();
 int realizarLogin(int *isAdmin);
+void menuLogin();
+int main() {
+    criarArquivos();  //cria os arquivos automaticamente
+    menuLogin();
+    return 0;
+}
+void menuPrincipal(int isAdmin);
+void cadastrarLivro();
+void listarLivros();
+int verificarLivroDisponivel(int idLivro);
+void emprestarLivro(int idUsuario);
+void reemprestarLivro(int idUsuario);

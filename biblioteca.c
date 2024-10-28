@@ -113,3 +113,199 @@ int realizarLogin(int *isAdmin) {
     fclose(file);
     return 0;
 }
+
+//mostra o menu de cadastro e login
+void menuLogin() {
+    int opcao;
+    do {
+        printf("\n========================\n");
+        printf("       BIBLIOTECA  ");
+        printf("\n========================\n");
+        printf("1. Cadastrar\n");
+        printf("2. Login\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarUsuario();
+                break;
+            case 2: {
+                int isAdmin = 0;
+                if (realizarLogin(&isAdmin)) {
+                    printf("\nLogin bem-sucedido!\n");
+                    menuPrincipal(isAdmin);
+                } else {
+                    printf("\nFalha no login!\n");
+                }
+                break;
+            }
+            case 3:
+                printf("\nSaindo...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 3);
+}
+
+//mostra o munu principal
+void menuPrincipal(int isAdmin) {
+    int opcao;
+    int idUsuario = isAdmin ? -1 : 1;
+
+    do {
+        printf("\n========================\n");
+        printf("     MENU PRINCIPAL  ");
+        printf("\n========================\n");
+        if (isAdmin) {
+            printf("1. Cadastrar Livro (Administrador)\n");
+        }
+        printf("2. Acervo\n");
+        printf("3. Empréstimo\n");
+        printf("4. Renovar Empréstimo\n");
+        printf("5. Doe um Livro\n");
+        printf("6. Meus Empréstimos\n");
+        printf("7. Voltar\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                if (isAdmin) cadastrarLivro();
+                else printf("Acesso negado. Opção exclusiva para o administrador.\n");
+                break;
+            case 2:
+                listarLivros();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                printf("\nSaindo do menu principal...\n");
+                break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 7);
+}
+
+//função de cadastrar livro, disponível apenas para o administrador
+void cadastrarLivro() {
+    FILE *file = fopen("livros.dat", "ab");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    Livro livro;
+    livro.id = gerarIdLivro();  
+    printf("\nTítulo: ");
+    scanf(" %[^\n]", livro.titulo);
+    printf("Autor: ");
+    scanf(" %[^\n]", livro.autor);
+    printf("Ano de Publicação: ");
+    scanf("%d", &livro.ano);
+    fwrite(&livro, sizeof(Livro), 1, file);
+    fclose(file);
+    printf("\nLivro cadastrado com sucesso!\n");
+}
+
+//função para mostrar o acervo
+void listarLivros() {
+    FILE *file = fopen("livros.dat", "rb");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    Livro livro;
+    printf("\n========================\n");
+    printf("  LISTA DE LIVROS  ");
+    printf("\n========================\n");
+    while (fread(&livro, sizeof(Livro), 1, file) == 1) {
+        printf("ID: %d | Título: %s | Autor: %s | Ano: %d\n", livro.id, livro.titulo, livro.autor, livro.ano);
+    }
+    fclose(file);
+}
+
+//verificar a disponibilidade do livro para realizar o empréstiimo
+int verificarLivroDisponivel(int idLivro) {
+    FILE *fileEmprestimos = fopen("emprestimos.dat", "rb");
+    if (fileEmprestimos == NULL) {
+        perror("ERRO");
+        return 1; 
+    }
+    Emprestimo emprestimo;
+    while (fread(&emprestimo, sizeof(Emprestimo), 1, fileEmprestimos) == 1) {
+        if (emprestimo.idLivro == idLivro && time(NULL) < emprestimo.dataDevolucao) {
+            fclose(fileEmprestimos);
+            return 0; 
+        }
+    }
+    fclose(fileEmprestimos);
+    return 1; 
+}
+
+//função de empréstimo
+void emprestarLivro(int idUsuario) {
+    FILE *file = fopen("livros.dat", "rb");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    int idLivro;
+    printf("Digite o ID do livro que deseja emprestar: ");
+    scanf("%d", &idLivro);
+    if (!verificarLivroDisponivel(idLivro)) {
+        printf("Livro já emprestado.\n");
+        fclose(file);
+        return;
+    }
+    Emprestimo emprestimo;
+    emprestimo.idUsuario = idUsuario;
+    emprestimo.idLivro = idLivro;
+    emprestimo.dataEmprestimo = time(NULL);
+    emprestimo.dataDevolucao = emprestimo.dataEmprestimo + EMPRESTIMO;
+    FILE *fileEmprestimos = fopen("emprestimos.dat", "ab");
+    if (fileEmprestimos == NULL) {
+        perror("ERRO");
+        fclose(file);
+        return;
+    }
+    fwrite(&emprestimo, sizeof(Emprestimo), 1, fileEmprestimos);
+    fclose(fileEmprestimos);
+    fclose(file);
+    printf("Livro emprestado com sucesso!\n");
+}
+
+//função para "reempréstimo" do livro
+void reemprestarLivro(int idUsuario) {
+    FILE *file = fopen("emprestimos.dat", "rb+");
+    if (file == NULL) {
+        perror("ERRO");
+        return;
+    }
+    int idLivro;
+    printf("Digite o ID do livro que deseja reemprestar: ");
+    scanf("%d", &idLivro);
+    Emprestimo emprestimo;
+    while (fread(&emprestimo, sizeof(Emprestimo), 1, file) == 1) {
+        if (emprestimo.idUsuario == idUsuario && emprestimo.idLivro == idLivro) {
+            emprestimo.dataDevolucao += REEMPRESTIMO;
+            fseek(file, -sizeof(Emprestimo), SEEK_CUR);
+            fwrite(&emprestimo, sizeof(Emprestimo), 1, file);
+            printf("Data atualizado com sucesso! Nova data de devolução: %s\n", ctime(&emprestimo.dataDevolucao));
+            fclose(file);
+            return;
+        }
+    }
+    printf("Empréstimo não encontrado.\n");
+    fclose(file);
+}
