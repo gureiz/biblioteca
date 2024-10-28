@@ -107,5 +107,5 @@ O programa exibirá um menu inicial para que o usuário se registre, faça login
 ##Autores	
 
 Gustavo Reis Teixeira     RA: 22.124.055-9
-Lucas Gasparetto Pimentel RA: 22.124.022-2
+Lucas Gasparetto Pimentel RA: 22.124.025-2
 
